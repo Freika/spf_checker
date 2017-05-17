@@ -20,8 +20,6 @@ module SpfChecker
     response(message, values)
   end
 
-  private
-
   def self.response(message, values = [])
     {
       correct: values&.include?(VALID_VALUE),
@@ -29,4 +27,5 @@ module SpfChecker
       message: message
     }
   end
+  private_class_method :response
 end
