@@ -7,7 +7,7 @@ This gem allows you to check domain SPF record and compare it with correct one.
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'spf_checker'
+gem 'spf_checker', github: 'Freika/spf_checker'
 ```
 
 Set environment variable for SPF record comparision:
