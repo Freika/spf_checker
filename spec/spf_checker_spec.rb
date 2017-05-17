@@ -2,7 +2,7 @@ require 'spec_helper'
 
 RSpec.describe SpfChecker do
   let(:invalid_message) do
-    'Please pass valid URI with protocol (\'http://\" or \"https://\").'
+    'Please pass valid URI with protocol ("http://" or "https://").'
   end
 
   it 'has a version number' do

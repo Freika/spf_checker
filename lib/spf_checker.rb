@@ -4,7 +4,7 @@ require 'addressable/uri'
 require 'net/dns'
 
 module SpfChecker
-  VALID_VALUE = 'v=spf1 a mx include:_spf.kiiiosk.ru ~all'.freeze
+  VALID_VALUE = ENV['VALID_SPF_VALUE'].freeze
 
   def self.check(uri)
     if uri.include?('http://') || uri.include?('https://')
