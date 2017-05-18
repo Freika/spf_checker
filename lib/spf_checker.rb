@@ -20,22 +20,10 @@ module SpfChecker
       Response.new(valid, spf_records).freeze
     end
 
+    private
+
     def parse(spf)
-      a_record = spf =~ /\ a\ /
-      mx_record = spf =~ /\ mx\ /
-      v_record = spf =~ /v=spf1\ /
-      include_record = spf =~ /include:_spf.kiiiosk.ru/
-      all_record = spf =~ /\ ~all/
-
-      if a_record && mx_record && v_record && include_record && all_record
-        valid = true
-      end
-
-      valid
+      @value.split.all? { |arg| spf =~ /#{arg}/ }
     end
   end
 end
-
-# a = SpfChecker::Domain.new('lalala')
-
-# "v=spf1 a mx include:_spf.kiiiosk.ru ~all"
