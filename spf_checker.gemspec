@@ -36,7 +36,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'bundler', '~> 1.14'
   spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'rspec', '~> 3.0'
+  spec.add_development_dependency 'byebug'
 
-  spec.add_dependency 'addressable', '~> 2.5'
   spec.add_dependency 'net-dns', '~> 0.8.0'
 end

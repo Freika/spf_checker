@@ -1,31 +1,41 @@
 require 'spf_checker/version'
 require 'rubygems'
-require 'addressable/uri'
 require 'net/dns'
+require 'byebug'
 
 module SpfChecker
-  VALID_VALUE = ENV['VALID_SPF_VALUE'].freeze
+  class Domain
+    Response = Struct.new(:correct, :spf_value)
 
-  def self.check(uri)
-    if uri.include?('http://') || uri.include?('https://')
-      domain = Addressable::URI.parse(uri).host
-      message = 'Request successfully complete.'
-
-      result = Net::DNS::Resolver.start(domain, Net::DNS::TXT)
-      values = result.each_mx.map(&:txt)
-    else
-      message = 'Please pass valid URI with protocol ("http://" or "https://").'
+    def initialize(value)
+      @value = value
     end
 
-    response(message, values)
-  end
+    def check(domain)
+      result = Net::DNS::Resolver.start(domain, Net::DNS::TXT)
+      spf_records = result.each_mx.map(&:txt)
 
-  def self.response(message, values = [])
-    {
-      correct: values&.include?(VALID_VALUE),
-      spf_value: values,
-      message: message
-    }
+      valid = spf_records.any? { |record| parse(record) }
+
+      Response.new(valid, spf_records).freeze
+    end
+
+    def parse(spf)
+      a_record = spf =~ /\ a\ /
+      mx_record = spf =~ /\ mx\ /
+      v_record = spf =~ /v=spf1\ /
+      include_record = spf =~ /include:_spf.kiiiosk.ru/
+      all_record = spf =~ /\ ~all/
+
+      if a_record && mx_record && v_record && include_record && all_record
+        valid = true
+      end
+
+      valid
+    end
   end
-  private_class_method :response
 end
+
+# a = SpfChecker::Domain.new('lalala')
+
+# "v=spf1 a mx include:_spf.kiiiosk.ru ~all"
