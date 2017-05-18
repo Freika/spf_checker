@@ -1,7 +1,6 @@
 require 'spf_checker/version'
 require 'rubygems'
 require 'net/dns'
-require 'byebug'
 
 module SpfChecker
   class Domain
@@ -23,7 +22,10 @@ module SpfChecker
     private
 
     def parse(spf)
-      @value.split.all? { |arg| spf =~ /#{arg}/ }
+      @value.split.all? do |arg|
+        arg = " #{arg} " if arg.length <= 2
+        spf =~ /#{arg}/
+      end
     end
   end
 end

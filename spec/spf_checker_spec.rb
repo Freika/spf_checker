@@ -9,31 +9,23 @@ RSpec.describe SpfChecker do
     expect(SpfChecker::VERSION).not_to be nil
   end
 
-  it 'Responses with an error if no valid domain provided' do
-    expect(SpfChecker.check('some string')).to eq(
-      correct: nil,
-      spf_value: nil,
-      message: invalid_message
-    )
+  it 'returns correct: true if SPF record is valid', :vcr do
+    VCR.use_cassette('test') do
+      spf_value = 'v=spf1 include:_spf.google.com ~all '
+      checker = SpfChecker::Domain.new(spf_value)
+      result = checker.check('google.com')
+
+      expect(result.correct).to be_truthy
+      expect(result.spf_value).to eq [spf_value]
+    end
   end
 
-  it 'returns correct: true if SPF record is valid' do
-    expect(SpfChecker).to receive(:check).with('http://google.com/').and_return(
-      correct: true,
-      spf_value: [SpfChecker::VALID_VALUE],
-      message: 'Request successfully complete.'
-    )
+  it 'returns correct: false if SPF record is invalid', :vcr do
+    spf_value = 'v=spf1 include:_spf.google.com ~all '
+    checker = SpfChecker::Domain.new(spf_value)
+    result = checker.check('example.com')
 
-    SpfChecker.check('http://google.com/')
-  end
-
-  it 'returns correct: false if SPF record is invalid' do
-    expect(SpfChecker).to receive(:check).with('http://non-existent.com/').and_return(
-      correct: false,
-      spf_value: [],
-      message: invalid_message
-    )
-
-    SpfChecker.check('http://non-existent.com/')
+    expect(result.correct).to be_falsey
+    expect(result.spf_value).to_not eq [spf_value]
   end
 end
