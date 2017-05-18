@@ -8,14 +8,14 @@ RSpec.describe SpfChecker do
     expect(SpfChecker::VERSION).not_to be nil
   end
 
-  it 'returns correct: true if SPF record is valid', :vcr do
+  it 'returns correct: true if SPF record is valid' do
     result = checker.check('google.com')
 
     expect(result.correct).to be_truthy
     expect(result.spf_value).to eq [spf_value]
   end
 
-  it 'returns correct: false if SPF record is invalid', :vcr do
+  it 'returns correct: false if SPF record is invalid' do
     result = checker.check('example.com')
 
     expect(result.correct).to be_falsey
