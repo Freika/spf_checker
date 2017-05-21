@@ -14,13 +14,13 @@ RSpec.describe SpfChecker do
     result = checker.check('google.com')
 
     expect(result.correct).to be_truthy
-    expect(result.spf_value.inspect).to include(spf_value)
+    expect(result.spf_value).to eq(spf_value)
   end
 
   it 'returns correct: false if SPF record is invalid' do
     result = checker.check('example.com')
 
     expect(result.correct).to be_falsey
-    expect(result.spf_value.inspect).to_not include(spf_value)
+    expect(result.spf_value).to_not eq(spf_value)
   end
 end
