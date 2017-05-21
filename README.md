@@ -24,7 +24,7 @@ Or install it yourself as:
 checker = SpfChecker::Domain.new("v=spf1 include:_netblocks.google.com include:_netblocks2.google.com include:_netblocks3.google.com ~all")
 
 checker.check('google.com')
-# => {:correct=>false, :spf_value=>["v=spf1 include:_spf.google.com ~all "], :message=>"Request successfully complete."}
+#  #<struct SpfChecker::Domain::Response correct=true, spf_value=#<SPF::Query::Record: v=spf1 include:_netblocks.google.com include:_netblocks2.google.com include:_netblocks3.google.com ~all>>
 ```
 
 ## Development
