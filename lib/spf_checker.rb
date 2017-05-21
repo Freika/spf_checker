@@ -28,14 +28,14 @@ module SpfChecker
     def construct_results_hash(sample, result)
       parsed_results = {}
 
-      sample.to_a.each do |e|
+      sample.to_a.each do |s|
         result.to_a.each do |r|
-          next if e.name != r.name
+          next if s.name != r.name
 
-          value = CORRECT if e.value == r.value
-          qualifier = CORRECT if e.qualifier == r.qualifier
+          value = CORRECT if s.value == r.value
+          qualifier = CORRECT if s.qualifier == r.qualifier
 
-          parsed_results[e.name] = { value: value, qualifier: qualifier }
+          parsed_results[s.name] = { value: value, qualifier: qualifier }
         end
       end
 
