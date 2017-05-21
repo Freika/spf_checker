@@ -3,6 +3,7 @@ require 'rubygems'
 require 'spf/query'
 
 module SpfChecker
+  # Check domain SPF record.
   class Domain
     CORRECT = 'correct'.freeze
 
@@ -29,12 +30,12 @@ module SpfChecker
 
       sample.to_a.each do |e|
         result.to_a.each do |r|
-          if e.name == r.name
-            value = CORRECT if e.value == r.value
-            qualifier = CORRECT if e.qualifier == r.qualifier
+          next if e.name != r.name
 
-            parsed_results[e.name] = { value: value, qualifier: qualifier }
-          end
+          value = CORRECT if e.value == r.value
+          qualifier = CORRECT if e.qualifier == r.qualifier
+
+          parsed_results[e.name] = { value: value, qualifier: qualifier }
         end
       end
 
