@@ -18,9 +18,9 @@ module SpfChecker
       result = SPF::Query::Record.query(domain)
 
       results = construct_results_hash(sample, result)
-      valid = check_equality(results)
+      valid = check_values_equality(results) && elements_number_equal(sample, result)
 
-      Response.new(valid, result).freeze
+      Response.new(valid, result.to_s).freeze
     end
 
     private
@@ -42,8 +42,12 @@ module SpfChecker
       parsed_results
     end
 
-    def check_equality(results)
+    def check_values_equality(results)
       results.values.map { |v| v.values.concat }.flatten.uniq == [CORRECT]
+    end
+
+    def elements_number_equal(sample, result)
+      result.to_s.split.size == sample.to_s.split.size
     end
   end
 end
