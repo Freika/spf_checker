@@ -10,13 +10,6 @@ Add this line to your application's Gemfile:
 gem 'spf_checker', github: 'Freika/spf_checker'
 ```
 
-Set environment variable for SPF record comparision:
-
-```
-# example
-ENV['VALID_SPF_VALUE'] = "v=spf1 include:_spf.google.com ~all "
-```
-
 And then execute:
 
     $ bundle install
@@ -28,7 +21,9 @@ Or install it yourself as:
 ## Usage
 
 ```ruby
-SpfChecker.check('http://google.com')
+checker = SpfChecker::Domain.new("v=spf1 include:_netblocks.google.com include:_netblocks2.google.com include:_netblocks3.google.com ~all")
+
+checker.check('google.com')
 # => {:correct=>false, :spf_value=>["v=spf1 include:_spf.google.com ~all "], :message=>"Request successfully complete."}
 ```
 

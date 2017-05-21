@@ -1,6 +1,6 @@
 require 'spf_checker/version'
 require 'rubygems'
-require 'net/dns'
+require 'spf/query'
 
 module SpfChecker
   class Domain
@@ -11,21 +11,28 @@ module SpfChecker
     end
 
     def check(domain)
-      result = Net::DNS::Resolver.start(domain, Net::DNS::TXT)
-      spf_records = result.each_mx.map(&:txt)
+      sample = SPF::Query::Record.parse(@value)
+      result = SPF::Query::Record.query(domain)
 
-      valid = spf_records.any? { |record| parse(record) }
+      parsed_results = {}
 
-      Response.new(valid, spf_records).freeze
-    end
+      sample.to_a.each do |e|
+        result.to_a.each do |r|
+          if e.name == r.name
+            value = 'correct' if e.value == r.value
+            qualifier = 'correct' if e.qualifier == r.qualifier
 
-    private
-
-    def parse(spf)
-      @value.split.all? do |arg|
-        arg = " #{arg} " if arg.length <= 2
-        spf =~ /#{arg}/
+            parsed_results[e.name] = { value: value, qualifier: qualifier }
+          end
+        end
       end
+
+      valid =
+        parsed_results.values.map do |v|
+          v.values.concat
+        end.flatten.uniq == ['correct']
+
+      Response.new(valid, result).freeze
     end
   end
 end
